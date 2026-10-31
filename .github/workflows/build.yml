@@ -1,0 +1,28 @@
+name: Build Luma IPA
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, master]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Unpack project
+        run: unzip -q Luma-iOS-project.zip
+
+      - name: Build IPA
+        run: bash luma-ios/build-ipa.sh
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Luma-IPA
+          path: luma-ios/build/Luma-unsigned.ipa
+          if-no-files-found: error
